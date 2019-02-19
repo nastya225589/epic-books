@@ -1,6 +1,28 @@
 ready(function() {
 
   // В этом месте должен быть написан ваш код
+  let menuElem = document.getElementById('nav');
+  let burger = menuElem.querySelector('.burger');
+
+  burger.onclick = function () {
+    menuElem.classList.toggle('main-nav--open');
+  };
+
+  const fragment = document.createDocumentFragment();
+  const template = document.querySelector('#template');
+
+  books.forEach(function (item, i) {
+    const newCard = template.content.querySelector('.card').cloneNode(true);
+
+    newCard.querySelector('.card__title').textContent = item.name;
+    newCard.querySelector('.card__price').textContent = `${item.price} ₽`;
+    newCard.querySelector('.card__img').src = `img/books/${item.uri}.jpg`;
+
+    if (i < 10)
+      fragment.appendChild(newCard);
+  });
+
+  document.querySelector('.catalog__books-list').appendChild(fragment);
 
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
