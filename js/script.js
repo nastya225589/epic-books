@@ -9,7 +9,7 @@ ready(function() {
   };
 
   let filterElem = document.getElementById('filters');
-  let filterBtn = document.getElementById('filters-form');
+  let filterBtn = document.getElementById('filters-trigger');
 
   filterBtn.onclick = function () {
     filterElem.classList.toggle('filters--open');
