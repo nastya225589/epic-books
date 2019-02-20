@@ -8,6 +8,13 @@ ready(function() {
     menuElem.classList.toggle('main-nav--open');
   };
 
+  let filterElem = document.getElementById('filters');
+  let filterBtn = document.getElementById('filters-form');
+
+  filterBtn.onclick = function () {
+    filterElem.classList.toggle('filters--open');
+  };
+
   const fragment = document.createDocumentFragment();
   const template = document.querySelector('#template');
 
