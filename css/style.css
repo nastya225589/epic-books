@@ -1628,7 +1628,16 @@ a.pagination__item:hover, a.pagination__item:focus {
   margin: 0 0 30px;
   font-size: 28px; }
 .popular__slider {
+  left: 0;
+  transition: all ease 1s;
+  width: 1540px;
   position: relative; }
+.popular__slider::after {
+  content: '';
+  display: block;
+  clear: both;}
+.popular__slide {
+  float: left; }
 .popular__slider-btn {
   position: absolute;
   z-index: 2;
@@ -1648,6 +1657,7 @@ a.pagination__item:hover, a.pagination__item:focus {
             transform: translateY(-50%);
     fill: #bfbfbf; }
 .popular__slider-btn--left {
+    top: 35%;
     left: 0; }
 .popular__slider-btn--left:before {
       content: '';
@@ -1660,6 +1670,7 @@ a.pagination__item:hover, a.pagination__item:focus {
 .popular__slider-btn--left svg {
       left: 17px; }
 .popular__slider-btn--right {
+    top: 35%;
     right: 0; }
 .popular__slider-btn--right:before {
       content: '';
@@ -1814,7 +1825,7 @@ a.pagination__item:hover, a.pagination__item:focus {
  */
 @media (min-width: 480px) {
     .card {
-      width: 220px; }
+      width: 214px; }
       .catalog__books-list {
         display: -webkit-box;
         display: flex;
@@ -2124,7 +2135,9 @@ a.pagination__item:hover, a.pagination__item:focus {
           margin-right: -15px;
           margin-left: -15px; }
     .popular__inner {
-      max-width: 1230px;
+      overflow: hidden;
+      width: 1104px;
+      height: auto;
       margin: auto;
       padding: 15px; }
     .popular__title {
@@ -2347,3 +2360,12 @@ a.pagination__item:hover, a.pagination__item:focus {
         -webkit-transition: max-height 0.6s;
         transition: max-height 0.6s; } }
 /*# sourceMappingURL=style.css.map */
+.input--error {
+  border: 1px solid red;
+}
+
+.form__error {
+  display: block;
+  color: red;
+  font-size: 12px;
+}

@@ -77,7 +77,7 @@
       <div class="page__content">
         <header class="page-header" role="banner">
           <div class="page-header__inner">
-            <a class="logo" href="/">
+            <a class="logo" href="index.html">
               <strong>EPIC BOOKS</strong>
             </a>
             <nav class="main-nav page-header__nav" id="nav">
@@ -133,7 +133,7 @@
           </div>
         </header>
         <section class="cart">
-          <form class="form cart__inner">
+          <form class="form cart__inner"  name="order">
             <header class="cart__header">
               <h1 class="cart__title">В корзине 99992 товара</h1>
               <button class="btn  btn--text cart__clear-btn" type="button">Очистить корзину</button>
@@ -146,60 +146,35 @@
                 <th class="cart__col-4">Цена</th>
                 <th class="cart__col-5"></th>
               </tr>
-              <tr class="cart__product">
-                <td class="cart__col-1">
-                  <img class="cart__item-img" src="img/tsennye-resheniya.jpg" alt="Ценные решения">
-                </td>
-                <td class="cart__col-2">
-                  <div class="cart__item-name">Название какие-то очень длинное, совершенно невменяемое для книгоиздателя</div>
-                </td>
-                <td class="cart__col-3">
-                  <div class="field-num  field-num--bg-tran">
-                    <span class="field-num__input-wrap">
-                      <button class="field-num__btn-minus" type="button">-</button>
-                      <input class="field-num__input" type="number" value="2" step="1" min="1"/>
-                      <button class="field-num__btn-plus" type="button">+</button>
-                    </span>
-                  </div>
-                </td>
-                <td class="cart__col-4">
-                  <span class="cart__item-price">1 024 ₽</span>
-                </td>
-                <td class="cart__col-5">
-                  <button class="close cart__product-del-btn" type="button">
-                    <svg width="16" height="16">
-                      <use xlink:href="#close"></use>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr class="cart__product">
-                <td class="cart__col-1">
-                  <img class="cart__item-img" src="img/tsennye-resheniya.jpg" alt="Ценные решения">
-                </td>
-                <td class="cart__col-2">
-                  <div class="cart__item-name">Название</div>
-                </td>
-                <td class="cart__col-3">
-                  <div class="field-num  field-num--bg-tran">
-                    <span class="field-num__input-wrap">
-                      <button class="field-num__btn-minus" type="button">-</button>
-                      <input class="field-num__input" type="number" value="1" step="1" min="1"/>
-                      <button class="field-num__btn-plus" type="button">+</button>
-                    </span>
-                  </div>
-                </td>
-                <td class="cart__col-4">
-                  <span class="cart__item-price">999 024 ₽</span>
-                </td>
-                <td class="cart__col-5">
-                  <button class="close cart__product-del-btn" type="button">
-                    <svg width="16" height="16">
-                      <use xlink:href="#close"></use>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
+              <!--<template>-->
+                <!--<tr class="cart__product">-->
+                  <!--<td class="cart__col-1">-->
+                    <!--<img class="cart__item-img" src="img/tsennye-resheniya.jpg" alt="Ценные решения">-->
+                  <!--</td>-->
+                  <!--<td class="cart__col-2">-->
+                    <!--<div class="cart__item-name">Название какие-то очень длинное, совершенно невменяемое для книгоиздателя</div>-->
+                  <!--</td>-->
+                  <!--<td class="cart__col-3">-->
+                    <!--<div class="field-num  field-num&#45;&#45;bg-tran">-->
+                      <!--<span class="field-num__input-wrap">-->
+                        <!--<button class="field-num__btn-minus" type="button">-</button>-->
+                        <!--<input class="field-num__input" type="number" value="1" step="1" min="1"/>-->
+                        <!--<button class="field-num__btn-plus" type="button">+</button>-->
+                      <!--</span>-->
+                    <!--</div>-->
+                  <!--</td>-->
+                  <!--<td class="cart__col-4">-->
+                    <!--<span class="cart__item-price">1024</span>-->
+                  <!--</td>-->
+                  <!--<td class="cart__col-5">-->
+                    <!--<button class="close cart__product-del-btn" type="button">-->
+                      <!--<svg width="16" height="16">-->
+                        <!--<use xlink:href="#close"></use>-->
+                      <!--</svg>-->
+                    <!--</button>-->
+                  <!--</td>-->
+                <!--</tr>-->
+              <!--</template>-->
               <tr>
                 <td class="cart__products-price" colspan="5">
                   Итого к оплате: <strong class="cart__products-price-num" id="cart-products-price-num">2 200 ₽</strong>
@@ -214,25 +189,29 @@
                   <label class="field-text  field-text--bg-gray">
                     <span class="field-text__name">Имя</span>
                     <span class="field-text__input-wrap">
-                      <input class="field-text__input" type="text" name="firstname" placeholder="Иван"/>
+                      <input class="field-text__input" type="text" name="firstname" id="firstname"  placeholder="Иван"/>
+                      <span class="form__error"></span>
                     </span>
                   </label>
                   <label class="field-text  field-text--bg-gray">
                     <span class="field-text__name">Фамилия</span>
                     <span class="field-text__input-wrap">
-                      <input class="field-text__input" type="text" name="lastname" placeholder="Помидоров"/>
+                      <input class="field-text__input" type="text" name="lastname" id="lastname"  placeholder="Помидоров"/>
+                      <span class="form__error"></span>
                     </span>
                   </label>
                   <label class="field-text  field-text--bg-gray">
                     <span class="field-text__name">Телефон</span>
                     <span class="field-text__input-wrap">
-                      <input class="field-text__input" type="tel" name="phone" placeholder="+7 812 000 00 00"/>
+                      <input class="field-text__input" type="tel" name="phone" id="phone"  placeholder="+7 812 000 00 00"/>
+                      <span class="form__error"></span>
                     </span>
                   </label>
                   <label class="field-text  field-text--bg-gray">
                     <span class="field-text__name">E-mail</span>
                     <span class="field-text__input-wrap">
-                      <input class="field-text__input" type="email" name="name" placeholder="user@mail.com"/>
+                      <input class="field-text__input" type="email" name="email"  id="email"  placeholder="user@mail.com"/>
+                      <span class="form__error"></span>
                     </span>
                   </label>
                 </div>
@@ -431,6 +410,35 @@
         </footer>
       </div>
     </div>
+    <template id="cart__product">
+      <tr class="cart__product">
+        <td class="cart__col-1">
+          <img class="cart__item-img" src="img/tsennye-resheniya.jpg" alt="Ценные решения">
+        </td>
+        <td class="cart__col-2">
+          <div class="cart__item-name">Название какие-то очень длинное, совершенно невменяемое для книгоиздателя</div>
+        </td>
+        <td class="cart__col-3">
+          <div class="field-num  field-num--bg-tran">
+            <span class="field-num__input-wrap">
+              <button class="field-num__btn-minus" type="button">-</button>
+              <input class="field-num__input" type="number" value="1" step="1" min="1"/>
+              <button class="field-num__btn-plus" type="button">+</button>
+            </span>
+          </div>
+        </td>
+        <td class="cart__col-4">
+          <span class="cart__item-price">1024</span>
+        </td>
+        <td class="cart__col-5">
+          <button class="close cart__product-del-btn" type="button">
+            <svg width="16" height="16">
+              <use xlink:href="#close"></use>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </template>
     <script src="js/choices.min.js"></script>
     <script src="js/nouislider.min.js"></script>
     <script src="js/script.js"></script>
