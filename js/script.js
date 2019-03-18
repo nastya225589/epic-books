@@ -93,7 +93,6 @@ function sliderRight() {
   popularSlider.style.left = left + 'px';
 }
 
-
   //В этом месте должен быть написан ваш код
   const xhr = new XMLHttpRequest();
 
@@ -124,7 +123,6 @@ function sliderRight() {
     cartWidget.textContent = cartBacket.length;
   };
   renderWidget();
-
 
   const render = data => {
     const bookList = document.querySelector('.catalog__books-list');
@@ -164,7 +162,7 @@ function sliderRight() {
         });
 
         let index = arr.indexOf(arr[0]);
-        console.log(index)
+        console.log(index);
 
         if (index !== -1) {
           data[index].amount += 1;
@@ -209,12 +207,6 @@ function sliderRight() {
       }
     });
   };
-
-
-
-
-
-
 
   //////_____Modal_____///////
   const renderModal = (item) => {
@@ -303,7 +295,8 @@ function sliderRight() {
     // cartList шапка таблицы
     cartList.appendChild(fragment);
 
-    let sum = cartSummator(data);
+    // let cartSum = document.querySelector('.cart__sum');
+    // cartSum = cartSummator(data);
     // cartList шапка количество
 
     let btnPlus = document.querySelectorAll('.field-num__btn-plus');
@@ -314,6 +307,7 @@ function sliderRight() {
         data[i].amount += 1;
         localStorage.setItem('cart', JSON.stringify(data));
         renderCart(cartBacket);
+        renderTotal(cartBacket);
       });
     }
 
@@ -330,6 +324,7 @@ function sliderRight() {
 
         localStorage.setItem('cart', JSON.stringify(data));
         renderCart(cartBacket);
+        renderTotal(cartBacket);
       });
     }
 
@@ -357,6 +352,7 @@ function sliderRight() {
 
         localStorage.setItem('cart', JSON.stringify(data));
         renderCart(cartBacket);
+        renderTotal(cartBacket);
         renderWidget();
       });
     }
@@ -364,6 +360,26 @@ function sliderRight() {
   };
 
   renderCart(cartBacket);
+
+  const renderTotal = data => {
+    const cartList = document.querySelector('.cart__table');
+    const fragment = document.createDocumentFragment();
+    const templateTotal = document.getElementById('total');
+    console.log(templateTotal);
+    const newCart = templateTotal.content.querySelector('.cart__total').cloneNode(true);
+    newCart.querySelector('.cart__products-price-num').textContent = cartSummator(data);
+    fragment.appendChild(newCart);
+    cartList.appendChild(fragment);
+  };
+
+  renderTotal(cartBacket);
+
+  let cartBacketSum = JSON.parse(localStorage.getItem('cart')) || [];
+  const renderWidgetSum = () => {
+    const cartWidget = document.querySelector('.cart__sum');
+    cartWidget.textContent = cartBacketSum.length;
+  };
+  renderWidgetSum();
 
 
   // ////////____form____///////
@@ -383,14 +399,10 @@ function submitForm(event) {
 }
 
 function validate() {
-
   for (let i=0; i < form.elements.length; i++) {
     textFieldValid(form.elements[i].id);
   }
-
 }
-
-
 
 const errorMessage = (id, str) => {
   const error = document.querySelector(`#${id} + .form__error`);

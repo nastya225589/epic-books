@@ -135,7 +135,7 @@
         <section class="cart">
           <form class="form cart__inner"  name="order">
             <header class="cart__header">
-              <h1 class="cart__title">В корзине 99992 товара</h1>
+              <h1 class="cart__title">В корзине <span class="cart__sum">0</span> товара</h1>
               <button class="btn  btn--text cart__clear-btn" type="button">Очистить корзину</button>
             </header>
             <table class="cart__table">
@@ -175,11 +175,7 @@
                   <!--</td>-->
                 <!--</tr>-->
               <!--</template>-->
-              <tr>
-                <td class="cart__products-price" colspan="5">
-                  Итого к оплате: <strong class="cart__products-price-num" id="cart-products-price-num">2 200 ₽</strong>
-                </td>
-              </tr>
+
             </table>
             <div class="cart__checkout checkout">
               <h2 class="checkout__title">Оформление заказа</h2>
@@ -436,6 +432,13 @@
               <use xlink:href="#close"></use>
             </svg>
           </button>
+        </td>
+      </tr>
+    </template>
+    <template id="total">
+      <tr class="cart__total">
+        <td class="cart__products-price" colspan="5">
+          Итого к оплате: <strong class="cart__products-price-num" id="cart-products-price-num">2 200 ₽</strong>
         </td>
       </tr>
     </template>
