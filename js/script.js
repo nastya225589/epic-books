@@ -1,12 +1,10 @@
 ready(function () {
-
-
-
   // Кастомные селекты (кроме выбора языка)
   new Choices('.field-select:not(#lang) select.field-select__select', {
     searchEnabled: false,
     shouldSort: false,
   });
+
   // Кастомный селект выбора языка отдельно
   new Choices('#lang select.field-select__select', {
     searchEnabled: false,
@@ -38,7 +36,7 @@ ready(function () {
   }
 
   // Выбор диапазона цен
-  var slider = document.getElementById('price-range');
+  let slider = document.getElementById('price-range');
   noUiSlider.create(slider, {
     start: [400, 1000],
     connect: true,
@@ -49,10 +47,11 @@ ready(function () {
     }
   });
 
-  var snapValues = [
+  let snapValues = [
     document.getElementById('price-from'),
     document.getElementById('price-to')
   ];
+
   const priceFrom = document.querySelector('#price-from');
   slider.noUiSlider.on('update', (values, handle) => {
     console.log(values[handle]);
@@ -61,7 +60,21 @@ ready(function () {
 
 });
 
+// ВНИМАНИЕ!
+// Нижеследующий код (кастомный селект и выбор диапазона цены) работает
+// корректно и не вызывает ошибок в консоли браузера только на главной.
+// Одна из ваших задач: сделать так, чтобы на странице корзины в консоли
+// браузера не было ошибок.
 
+function ready(fn) {
+  if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+//В этом месте должен быть написан ваш код
 
 ////////____slider____///////
 const popularSliderLeft = document.getElementById('popular-slider-left');
@@ -70,6 +83,7 @@ const popularSliderRight = document.getElementById('popular-slider-left');
 if (popularSliderLeft !== null) {
   popularSliderLeft.onclick = sliderLeft;
 }
+
 if (popularSliderRight !== null) {
   popularSliderRight.onclick = sliderRight;
 }
@@ -93,296 +107,309 @@ function sliderRight() {
   popularSlider.style.left = left + 'px';
 }
 
-  //В этом месте должен быть написан ваш код
-  const xhr = new XMLHttpRequest();
+////////____render-json____///////
+const xhr = new XMLHttpRequest();
 
-  xhr.open('GET', 'https://api.myjson.com/bins/ch0pi');
-  xhr.addEventListener('readystatechange', function () {
-    if (this.readyState != 4) return;   // Пропуск незавершённых запросов.
-    if (this.status != 200) {
-      console.log(xhr.status);          // Просмотр причины неудачи.
-    } else {
-      const data = JSON.parse(xhr.responseText);
-   // Просмотр содержимого ответа.
-      // data.forEach((item, i) => {
-      //   item.id = i;
-      // });
-      const bookList = document.querySelector('.catalog__books-list');
-      if (bookList !== null) {
-        render(data);
-        filterType(data);
-      }
-    }
-  });
-
-  xhr.send();
-
-  let cartBacket = JSON.parse(localStorage.getItem('cart')) || [];
-  const renderWidget = () => {
-    const cartWidget = document.querySelector('.page-header__cart-num');
-    cartWidget.textContent = cartBacket.length;
-  };
-  renderWidget();
-
-  const render = data => {
+xhr.open('GET', 'https://api.myjson.com/bins/ch0pi');
+xhr.addEventListener('readystatechange', function () {
+  if (this.readyState != 4) return;   // Пропуск незавершённых запросов.
+  if (this.status != 200) {
+    console.log(xhr.status);          // Просмотр причины неудачи.
+  } else {
+    const data = JSON.parse(xhr.responseText);
+ // Просмотр содержимого ответа.
+    // data.forEach((item, i) => {
+    //   item.id = i;
+    // });
     const bookList = document.querySelector('.catalog__books-list');
-    bookList.innerHTML = '';
-    const fragment = document.createDocumentFragment();
-    const template = document.querySelector('#template');
-
-    data.forEach(function (item, i) {
-      // log(item)
-      // item.id = i;
-      const newCard = template.content.querySelector('.card').cloneNode(true);
-
-      newCard.querySelector('.card__inner').href = 'index.html#' + item.id;
-      newCard.querySelector('.card__inner').dataset.id = item.id;
-      newCard.dataset.id = item.id;
-      newCard.querySelector('.card__title').textContent = item.name;
-      newCard.querySelector('.card__price').textContent = `${item.price} ₽`;
-      newCard.querySelector('.card__img').src = `img/books/${item.id}.jpg`;
-      newCard.querySelector('.card__img').alt = item.name;
-      newCard.querySelector('.card__buy').dataset.id = item.id;
-
-      if (i < 8) {
-        fragment.appendChild(newCard);
-      }
-    });
-
-    bookList.appendChild(fragment);
-
-    let arrBtnBuy = document.getElementsByClassName('card__buy');
-    for (let i = 0; i < arrBtnBuy.length; i++) {
-      arrBtnBuy[i].addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        // проверять добавлен ли товар
-        let arr = cartBacket.filter(item => {
-          return item.id === data[i].id
-        });
-
-        let index = arr.indexOf(arr[0]);
-        console.log(index);
-
-        if (index !== -1) {
-          data[index].amount += 1;
-        } else {
-          data[i].amount = 1;
-          cartBacket.push(data[i]);
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cartBacket));
-        renderWidget();
-      });
+    if (bookList !== null) {
+      render(data);
+      filterType(data);
     }
+  }
+});
 
+xhr.send();
 
-    let arrCard = document.getElementsByClassName('card');
-    for (let i = 0; i < arrCard.length; i++) {
-      arrCard[i].addEventListener('click', function (e) {
-        if (e.target.closest('.card') !== null) {
-          let arr = data.filter(item => {
-            let re = new RegExp(e.target.dataset.id, 'gi');
-            return re.test(item.id)
-          });
-          // вызывать модалку
-          renderModal(arr[i] || arr[0]);
-        }
+let cartBacket = JSON.parse(localStorage.getItem('cart')) || [];
+
+const renderWidget = () => {
+  const cartWidget = document.querySelector('.page-header__cart-num');
+  const cartSum = document.querySelector('.cart__sum');
+  let arrAmount = arraySum(cartBacket.map(a => a.amount));
+
+  function arraySum(arr) {
+    let sum = 0;
+    if (arr.length) {
+      sum = arr.reduce((a, b) => {
+        return (parseFloat(a) || 0) + (parseFloat(b) || 0);
       });
+    } else {
+      sum = 0;
     }
-  };
+    return sum;
+  }
 
-  const filterType = data => {
-    const tabs = document.querySelector('.page-header__book-tabs');
+  cartWidget.textContent = arrAmount;
+  if (cartSum !== null) {
+    cartSum.textContent = arrAmount;
+  }
+};
 
-    tabs.addEventListener('click', (e) => {
-      e.preventDefault();
+renderWidget();
 
-      if (e.target.classList.contains('tabs__item-link')) {
-        let filtered = data.filter(item => {
-          return item.type === e.target.dataset.type;
-        });
-        console.log(filtered);
-        render(filtered);
-      }
-    });
-  };
+const render = data => {
+  const bookList = document.querySelector('.catalog__books-list');
+  bookList.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+  const template = document.querySelector('#template');
 
-  //////_____Modal_____///////
-  const renderModal = (item) => {
-    const modalContent = document.querySelector('.modal__dialog');
-    modalContent.innerHTML = '';
-    const fragment = document.createDocumentFragment();
-    const templateProduct = document.querySelector('#product-template');
-
+  data.forEach(function (item, i) {
     // log(item)
-    const newProduct = templateProduct.content.querySelector('.modal__content').cloneNode(true);
+    // item.id = i;
+    const newCard = template.content.querySelector('.card').cloneNode(true);
 
-    newProduct.querySelector('.product__title').textContent = item.name;
-    newProduct.querySelector('.btn--price').textContent = `${item.price} ₽`;
-    newProduct.querySelector('.product__img-wrap img').src = `img/books/${item.id}.jpg`;
+    newCard.querySelector('.card__inner').href = 'index.html#' + item.id;
+    newCard.querySelector('.card__inner').dataset.id = item.id;
+    newCard.dataset.id = item.id;
+    newCard.querySelector('.card__title').textContent = item.name;
+    newCard.querySelector('.card__price').textContent = `${item.price} ₽`;
+    newCard.querySelector('.card__img').src = `img/books/${item.id}.jpg`;
+    newCard.querySelector('.card__img').alt = item.name;
+    newCard.querySelector('.card__buy').dataset.id = item.id;
 
-    fragment.appendChild(newProduct);
-    modalContent.appendChild(fragment);
-
-    // //////_____main-nav--open_____///////
-    let modal = document.getElementById('modal-book-view');
-    let html = document.querySelector('.js');
-    modal.classList.toggle('modal--open');
-    html.classList.toggle('js-modal-open');
-
-    let modalCloseBtn = document.querySelector('.modal__close');
-    modalCloseBtn.addEventListener('click', function () {
-      modal.classList.remove('modal--open');
-      html.classList.remove('js-modal-open');
-    });
-  };
-
-  //////_____burger_____///////
-  let burger = document.querySelector('.burger');
-  let menuElem = document.getElementById('nav');
-  burger.addEventListener('click', function () {
-    menuElem.classList.toggle('main-nav--open');
+    if (i < 8) {
+      fragment.appendChild(newCard);
+    }
   });
 
-  //////_____filters--open_____///////
-  let filterElem = document.getElementById('filters');
-  let filterBtn = document.getElementById('filters-trigger');
-  if (filterBtn != null) {
-    filterBtn.addEventListener('click', function () {
-      filterElem.classList.toggle('filters--open');
+  bookList.appendChild(fragment);
+
+  let arrBtnBuy = document.getElementsByClassName('card__buy');
+  //
+  for (let item of arrBtnBuy) {
+    item.addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      const id = this.dataset.id;
+
+      const addedProduct = cartBacket.find(item => {
+        return item.id === id
+      });
+
+      if (addedProduct) {
+        cartBacket.map(function (item, i) {
+          if (item.id === id)
+            item.amount++;
+        })
+      } else {
+        const currentProduct = data.find(item => {
+          return item.id === id
+        });
+        currentProduct.amount = 1;
+        cartBacket.push(currentProduct);
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cartBacket));
+      renderWidget();
+    })
+  }
+
+  let arrCard = document.getElementsByClassName('card');
+  for (let i = 0; i < arrCard.length; i++) {
+    arrCard[i].addEventListener('click', function (e) {
+      if (e.target.closest('.card') !== null) {
+        let arr = data.filter(item => {
+          let re = new RegExp(e.target.dataset.id, 'gi');
+          return re.test(item.id)
+        });
+        // вызывать модалку
+        renderModal(arr[i] || arr[0]);
+      }
+    });
+  }
+};
+
+const filterType = data => {
+  const tabs = document.querySelector('.page-header__book-tabs');
+
+  tabs.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (e.target.classList.contains('tabs__item-link')) {
+      let filtered = data.filter(item => {
+        return item.type === e.target.dataset.type;
+      });
+      console.log(filtered);
+      render(filtered);
+    }
+  });
+};
+
+//////_____Modal_____///////
+const renderModal = (item) => {
+  const modalContent = document.querySelector('.modal__dialog');
+  modalContent.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+  const templateProduct = document.querySelector('#product-template');
+
+  const newProduct = templateProduct.content.querySelector('.modal__content').cloneNode(true);
+
+  newProduct.querySelector('.product__title').textContent = item.name;
+  newProduct.querySelector('.btn--price').textContent = `${item.price} ₽`;
+  newProduct.querySelector('.product__img-wrap img').src = `img/books/${item.id}.jpg`;
+
+  fragment.appendChild(newProduct);
+  modalContent.appendChild(fragment);
+
+  // //////_____main-nav--open_____///////
+  let modal = document.getElementById('modal-book-view');
+  let html = document.querySelector('.js');
+  modal.classList.toggle('modal--open');
+  html.classList.toggle('js-modal-open');
+
+  let modalCloseBtn = document.querySelector('.modal__close');
+  modalCloseBtn.addEventListener('click', function () {
+    modal.classList.remove('modal--open');
+    html.classList.remove('js-modal-open');
+  });
+};
+
+//////_____burger_____///////
+let burger = document.querySelector('.burger');
+let menuElem = document.getElementById('nav');
+burger.addEventListener('click', function () {
+  menuElem.classList.toggle('main-nav--open');
+});
+
+//////_____filters--open_____///////
+let filterElem = document.getElementById('filters');
+let filterBtn = document.getElementById('filters-trigger');
+if (filterBtn != null) {
+  filterBtn.addEventListener('click', function () {
+    filterElem.classList.toggle('filters--open');
+  });
+}
+
+
+////////____cart____///////
+const cartSummator = data => {
+  let result = 0;
+
+  data.forEach(item => {
+    result += item.amount * item.price
+  });
+
+  console.log(result);
+
+  return result;
+};
+
+const renderCart = data => {
+  const cartList = document.querySelector('.cart__table');
+  cartList.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+  const templateCart = document.getElementById('cart__product');
+  console.log(templateCart);
+
+  data.forEach(function (item) {
+    const newCart = templateCart.content.querySelector('.cart__product').cloneNode(true);
+
+    newCart.dataset.id = item.id;
+    newCart.querySelector('.cart__item-name').textContent = item.name;
+    newCart.querySelector('.cart__item-price').textContent = `${item.price * item.amount} ₽`;
+    newCart.querySelector('.field-num__input').value = item.amount;
+    newCart.querySelector('.cart__item-img').src = `img/books/${item.id}.jpg`;
+    newCart.querySelector('.cart__item-name').alt = item.name;
+
+    fragment.appendChild(newCart);
+  });
+  // cartList шапка таблицы
+  cartList.appendChild(fragment);
+
+  // let cartSum = document.querySelector('.cart__sum');
+  // cartSum = cartSummator(data);
+  // cartList шапка количество
+
+  let btnPlus = document.querySelectorAll('.field-num__btn-plus');
+  for (let i = 0; i < btnPlus.length; i++) {
+    btnPlus[i].addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      data[i].amount += 1;
+      localStorage.setItem('cart', JSON.stringify(data));
+      renderCart(cartBacket);
+      renderTotal(cartBacket);
+      renderWidget();
     });
   }
 
+  let btnMinus = document.querySelectorAll('.field-num__btn-minus');
+  for (let i = 0; i < btnMinus.length; i++) {
+    btnMinus[i].addEventListener('click', function (e) {
+      e.stopPropagation();
 
-  ////////____cart____///////
-  const cartSummator = data => {
-    let result = 0;
+      data[i].amount -= 1;
 
-    data.forEach(item => {
-      result += item.amount * item.price
+      if (data[i].amount <= 1) {
+        data[i].amount = 1
+      }
+
+      localStorage.setItem('cart', JSON.stringify(data));
+      renderCart(cartBacket);
+      renderTotal(cartBacket);
+      renderWidget();
     });
+  }
 
-    console.log(result);
+  let numInput = document.querySelectorAll('.field-num__input');
+  for (let i = 0; i < numInput.length; i++) {
+    numInput[i].addEventListener('change', function (e) {
+      e.stopPropagation();
 
-    return result;
-  };
+      data[i].amount = +numInput[i].value;
 
-  const renderCart = data => {
-    const cartList = document.querySelector('.cart__table');
-    cartList.innerHTML = '';
-    const fragment = document.createDocumentFragment();
-    const templateCart = document.getElementById('cart__product');
-    console.log(templateCart);
+      if (data[i].amount <= 1) {
+        data[i].amount = 1;
+      }
 
-
-    data.forEach(function (item) {
-
-      const newCart = templateCart.content.querySelector('.cart__product').cloneNode(true);
-      // console.log(newCart.querySelector('tr'));
-      // newCart.querySelector('.cart__product').dataset.id = item.id;
-      newCart.dataset.id = item.id;
-      newCart.querySelector('.cart__item-name').textContent = item.name;
-      newCart.querySelector('.cart__item-price').textContent = `${item.price * item.amount} ₽`;
-      newCart.querySelector('.field-num__input').value = item.amount;
-
-      newCart.querySelector('.cart__item-img').src = `img/books/${item.id}.jpg`;
-      newCart.querySelector('.cart__item-name').alt = item.name;
-
-      fragment.appendChild(newCart);
-
+      localStorage.setItem('cart', JSON.stringify(data));
+      renderCart(cartBacket);
     });
-    // cartList шапка таблицы
-    cartList.appendChild(fragment);
+  }
 
-    // let cartSum = document.querySelector('.cart__sum');
-    // cartSum = cartSummator(data);
-    // cartList шапка количество
+  let delBtn = document.querySelectorAll('.cart__product-del-btn');
+  for (let i = 0; i < delBtn.length; i++) {
+    delBtn[i].addEventListener('click', function (e) {
+      e.stopPropagation();
+      data.splice(i, 1);
 
-    let btnPlus = document.querySelectorAll('.field-num__btn-plus');
-    for (let i = 0; i < btnPlus.length; i++) {
-      btnPlus[i].addEventListener('click', function (e) {
-        e.stopPropagation();
+      localStorage.setItem('cart', JSON.stringify(data));
+      renderCart(cartBacket);
+      renderTotal(cartBacket);
+      renderWidget();
+    });
+  }
+};
 
-        data[i].amount += 1;
-        localStorage.setItem('cart', JSON.stringify(data));
-        renderCart(cartBacket);
-        renderTotal(cartBacket);
-      });
-    }
+if (cartBacket !== null) {
+   renderCart(cartBacket);
+}
 
-    let btnMinus = document.querySelectorAll('.field-num__btn-minus');
-    for (let i = 0; i < btnMinus.length; i++) {
-      btnMinus[i].addEventListener('click', function (e) {
-        e.stopPropagation();
+const renderTotal = data => {
+  const cartList = document.querySelector('.cart__table');
+  const fragment = document.createDocumentFragment();
+  const templateTotal = document.getElementById('total');
+  console.log(templateTotal);
+  const newCart = templateTotal.content.querySelector('.cart__total').cloneNode(true);
+  newCart.querySelector('.cart__products-price-num').textContent = cartSummator(data);
+  fragment.appendChild(newCart);
+  cartList.appendChild(fragment);
+};
 
-        data[i].amount -= 1;
+renderTotal(cartBacket);
 
-        if (data[i].amount <= 1) {
-          data[i].amount = 1
-        }
-
-        localStorage.setItem('cart', JSON.stringify(data));
-        renderCart(cartBacket);
-        renderTotal(cartBacket);
-      });
-    }
-
-    let numInput = document.querySelectorAll('.field-num__input');
-    for (let i = 0; i < numInput.length; i++) {
-      numInput[i].addEventListener('change', function (e) {
-        e.stopPropagation();
-
-        data[i].amount = +numInput[i].value;
-
-        if (data[i].amount <= 1) {
-          data[i].amount = 1;
-        }
-
-        localStorage.setItem('cart', JSON.stringify(data));
-        renderCart(cartBacket);
-      });
-    }
-
-    let delBtn = document.querySelectorAll('.cart__product-del-btn');
-    for (let i = 0; i < delBtn.length; i++) {
-      delBtn[i].addEventListener('click', function (e) {
-        e.stopPropagation();
-        data.splice(i, 1);
-
-        localStorage.setItem('cart', JSON.stringify(data));
-        renderCart(cartBacket);
-        renderTotal(cartBacket);
-        renderWidget();
-      });
-    }
-    // cardCounter('.field-num__input', '.field-num__btn-plus', '.field-num__btn-minus');
-  };
-
-  renderCart(cartBacket);
-
-  const renderTotal = data => {
-    const cartList = document.querySelector('.cart__table');
-    const fragment = document.createDocumentFragment();
-    const templateTotal = document.getElementById('total');
-    console.log(templateTotal);
-    const newCart = templateTotal.content.querySelector('.cart__total').cloneNode(true);
-    newCart.querySelector('.cart__products-price-num').textContent = cartSummator(data);
-    fragment.appendChild(newCart);
-    cartList.appendChild(fragment);
-  };
-
-  renderTotal(cartBacket);
-
-  let cartBacketSum = JSON.parse(localStorage.getItem('cart')) || [];
-  const renderWidgetSum = () => {
-    const cartWidget = document.querySelector('.cart__sum');
-    cartWidget.textContent = cartBacketSum.length;
-  };
-  renderWidgetSum();
-
-
-  // ////////____form____///////
+////////____form____///////
   //
   // const orderForm = document.forms.order;
 
@@ -496,18 +523,4 @@ form.addEventListener('input', (e) => {
 
 
 
-// ВНИМАНИЕ!
-  // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
-  // корректно и не вызывает ошибок в консоли браузера только на главной.
-  // Одна из ваших задач: сделать так, чтобы на странице корзины в консоли
-  // браузера не было ошибок.
 
-
-
-function ready(fn) {
-  if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
