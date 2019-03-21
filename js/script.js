@@ -378,7 +378,20 @@ const renderCart = data => {
     });
   }
 
-  let delBtn = document.querySelectorAll('.cart__product-del-btn');
+  const clearBtn = document.querySelectorAll('.cart__clear-btn');
+  for (let i = 0; i < clearBtn.length; i++) {
+    clearBtn[i].addEventListener('click', function (e) {
+      e.stopPropagation();
+      data.splice(i);
+
+      localStorage.setItem('cart', JSON.stringify(data));
+      renderCart(cartBacket);
+      renderTotal(cartBacket);
+      renderWidget();
+    });
+  }
+
+  const delBtn = document.querySelectorAll('.cart__product-del-btn');
   for (let i = 0; i < delBtn.length; i++) {
     delBtn[i].addEventListener('click', function (e) {
       e.stopPropagation();
