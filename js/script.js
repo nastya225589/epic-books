@@ -427,9 +427,6 @@ renderTotal(cartBacket);
   // const orderForm = document.forms.order;
 
 const form = document.forms.order;
-// const fieldset = document.querySelectorAll('fieldset');
-// // fieldset[2].style.display = 'none';
-// fieldset[3].style.display = 'none';
 
 form.addEventListener('submit', submitForm);
 
@@ -471,20 +468,19 @@ const textFieldValid = id => {
   }
 
   if (input.type === 'tel') {
-    // let re = new RegExp('', 'gi');
-    let re = /[\+\d]+?[\s\d\(\)-]+\d/gm;
-    if (re.test(input.value) || !input.value.length) {
-      errorMessage(id, "должно быть +7 812 000 00 00");
-      input.classList.add('input--error');
-    } else {
+    const reg = new RegExp('^[0-9]+$');
+    if (reg.test(input.value)) {
       errorMessage(id, "");
       input.classList.remove('input--error');
+    } else {
+      errorMessage(id, "В поле должны быть только цифры");
+      input.classList.add('input--error');
     }
   }
 
   if (input.type === 'email') {
-    let re = /\b[A-Z0-9]+@[A-Z0-9]+\.[A-Z]{2,4}\b/gim;
-    if (re.test(input.value) || !input.value.length) {
+    const re = /\b[A-Z0-9]+@[A-Z0-9]+\.[A-Z]{2,4}\b/gim;
+    if (!re.test(input.value)) {
       errorMessage(id, "Поле не должно быть пустым");
       input.classList.add('input--error');
     } else {
@@ -495,21 +491,35 @@ const textFieldValid = id => {
 };
 
 const selectTypeDelivery = (e) => {
-  if (e.type !== 'radio') {
+  if (e.name !== 'delivery') {
     return;
   }
 
-  const fieldset = document.querySelectorAll('fieldset');
-
-
-  if (e.value === 'pickup') {
-    fieldset[2].style.display = 'block';
-    fieldset[3].style.display = 'none';
+  if (e.value === '1') {
+    const templateCart = document.getElementById('cart-delivery-1');
+    templateCart.classList.remove('cart__delivery--hidden');
+    const templateCart2 = document.getElementById('cart-delivery-2');
+    templateCart2.classList.add('cart__delivery--hidden');
+    const templateCart3 = document.getElementById('cart-delivery-3');
+    templateCart3.classList.add('cart__delivery--hidden');
   }
 
-  if (e.value === 'courier') {
-    fieldset[2].style.display = 'none';
-    fieldset[3].style.display = 'block';
+  if (e.value === '2') {
+    const templateCart = document.getElementById('cart-delivery-2');
+    templateCart.classList.remove('cart__delivery--hidden');
+    const templateCart1 = document.getElementById('cart-delivery-1');
+    templateCart1.classList.add('cart__delivery--hidden');
+    const templateCart3 = document.getElementById('cart-delivery-3');
+    templateCart3.classList.add('cart__delivery--hidden');
+  }
+
+  if (e.value === '3') {
+    const templateCart = document.getElementById('cart-delivery-3');
+    templateCart.classList.remove('cart__delivery--hidden');
+    const templateCart2 = document.getElementById('cart-delivery-2');
+    templateCart2.classList.add('cart__delivery--hidden');
+    const templateCart1 = document.getElementById('cart-delivery-1');
+    templateCart1.classList.add('cart__delivery--hidden');
   }
 };
 
