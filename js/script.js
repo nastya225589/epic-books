@@ -78,7 +78,7 @@ function ready(fn) {
 
 ////////____slider____///////
 const popularSliderLeft = document.getElementById('popular-slider-left');
-const popularSliderRight = document.getElementById('popular-slider-left');
+const popularSliderRight = document.getElementById('popular-slider-right');
 
 if (popularSliderLeft !== null) {
   popularSliderLeft.onclick = sliderLeft;
@@ -186,7 +186,7 @@ const render = data => {
   bookList.appendChild(fragment);
 
   let arrBtnBuy = document.getElementsByClassName('card__buy');
-  //
+
   for (let item of arrBtnBuy) {
     item.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -327,10 +327,6 @@ const renderCart = data => {
   // cartList шапка таблицы
   cartList.appendChild(fragment);
 
-  // let cartSum = document.querySelector('.cart__sum');
-  // cartSum = cartSummator(data);
-  // cartList шапка количество
-
   let btnPlus = document.querySelectorAll('.field-num__btn-plus');
   for (let i = 0; i < btnPlus.length; i++) {
     btnPlus[i].addEventListener('click', function (e) {
@@ -415,9 +411,13 @@ const renderTotal = data => {
   const templateTotal = document.getElementById('total');
   console.log(templateTotal);
   const newCart = templateTotal.content.querySelector('.cart__total').cloneNode(true);
-  newCart.querySelector('.cart__products-price-num').textContent = cartSummator(data);
+  newCart.querySelector('.cart__products-price-num').textContent = `${cartSummator(data)} ₽`;
   fragment.appendChild(newCart);
   cartList.appendChild(fragment);
+
+  const cartResult = document.querySelector('.checkout__price');
+  cartResult.textContent = `${cartSummator(data)} ₽`;
+
 };
 
 renderTotal(cartBacket);
@@ -528,20 +528,8 @@ form.addEventListener('input', (e) => {
 
   textFieldValid(e.target.id);
 
-  // if (input.type === 'checkbox') {
-  //   if (input.checked) {
-  //     errorMessage(id, "Поле не должно быть пустым");
-  //     input.classList.add('input--error');
-  //   } else {
-  //     errorMessage(id, "");
-  //     input.classList.remove('input--error');
-  //   }
-  // }
-
   selectTypeDelivery(e.target);
 });
-
-
 
 
 
